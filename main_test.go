@@ -44,6 +44,9 @@ func Test_checkRateLimit(t *testing.T) {
 	}
 }
 
+// TODO implement method & test
+func TestCheckrepo(t *testing.T) {}
+
 type spyChecker struct {
 	repo []*github.Repository
 	err  error
@@ -51,4 +54,9 @@ type spyChecker struct {
 
 func (sc *spyChecker) CheckRate() ([]*github.Repository, error) {
 	return sc.repo, sc.err
+}
+
+// TODO implement method & test
+func (sc *spyChecker) CheckRepo() (*github.Repository, error) {
+	return nil, sc.err
 }
