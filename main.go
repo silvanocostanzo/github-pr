@@ -32,25 +32,25 @@ func checkRateLimit(c Checker) ([]*github.Repository, error) {
 	return repos, nil
 }
 
-func createNewPullRequest(ctx context.Context, client *github.Client) (*github.PullRequest, *github.Response, error) {
-	newPR := &github.NewPullRequest{
-		Title: github.String("test PR"),
-		Head:  github.String("dev"),
-		Base:  github.String("master"),
-		Body:  github.String("a description"),
-		// Issue:               github.Int(35),
-		MaintainerCanModify: github.Bool(true),
-		Draft:               github.Bool(false),
-	}
+// func createNewPullRequest(ctx context.Context, client *github.Client) (*github.PullRequest, *github.Response, error) {
+// 	newPR := &github.NewPullRequest{
+// 		Title: github.String("test PR"),
+// 		Head:  github.String("dev"),
+// 		Base:  github.String("master"),
+// 		Body:  github.String("a description"),
+// 		// Issue:               github.Int(35),
+// 		MaintainerCanModify: github.Bool(true),
+// 		Draft:               github.Bool(false),
+// 	}
 
-	req, res, err := client.PullRequests.Create(ctx, "silvanocostanzo", "assmat", newPR)
+// 	req, res, err := client.PullRequests.Create(ctx, "silvanocostanzo", "assmat", newPR)
 
-	if err != nil {
-		return nil, nil, err
-	}
+// 	if err != nil {
+// 		return nil, nil, err
+// 	}
 
-	return req, res, nil
-}
+// 	return req, res, nil
+// }
 
 func main() {
 	// ctx := context.Background()
