@@ -27,7 +27,7 @@ func checkRateLimit(c Checker) ([]*github.Repository, error) {
 	repos, err := c.CheckRate()
 	if _, ok := err.(*github.RateLimitError); ok {
 		log.Println("hit rate limit")
-		return nil, err
+		return []*github.Repository{}, err
 	}
 	return repos, nil
 }
