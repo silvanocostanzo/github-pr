@@ -10,17 +10,25 @@ import (
 
 type Checker interface {
 	CheckRate() ([]*github.Repository, error)
+	CheckRepo() (*github.Repository, error)
 }
 
 type DefaultChecker struct {
 	client github.Client
 	ctx    context.Context
+	repo   string
 	user   string
 }
 
+// dc.repo is not used in CheckRate
 func (dc *DefaultChecker) CheckRate() ([]*github.Repository, error) {
 	repos, _, err := dc.client.Repositories.List(dc.ctx, dc.user, nil)
 	return repos, err
+}
+
+func (dc *DefaultChecker) CheckRepo() (*github.Repository, error) {
+	repo, _, err := dc.client.Repositories.Get(dc.ctx, dc.user, dc.repo)
+	return repo, err
 }
 
 func checkRateLimit(c Checker) ([]*github.Repository, error) {
@@ -32,50 +40,26 @@ func checkRateLimit(c Checker) ([]*github.Repository, error) {
 	return repos, nil
 }
 
-// func createNewPullRequest(ctx context.Context, client *github.Client) (*github.PullRequest, *github.Response, error) {
-// 	newPR := &github.NewPullRequest{
-// 		Title: github.String("test PR"),
-// 		Head:  github.String("dev"),
-// 		Base:  github.String("master"),
-// 		Body:  github.String("a description"),
-// 		// Issue:               github.Int(35),
-// 		MaintainerCanModify: github.Bool(true),
-// 		Draft:               github.Bool(false),
-// 	}
-
-// 	req, res, err := client.PullRequests.Create(ctx, "silvanocostanzo", "assmat", newPR)
-
-// 	if err != nil {
-// 		return nil, nil, err
-// 	}
-
-// 	return req, res, nil
-// }
+func getRepo(c Checker) (*github.Repository, error) {
+	repo, err := c.CheckRepo()
+	if err != nil {
+		log.Fatalf("cannot get the repo")
+	}
+	return repo, nil
+}
 
 func main() {
-	// ctx := context.Background()
-	// ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: "your token"})
-	// tc := oauth2.NewClient(ctx, ts)
-	// client := github.NewClient(tc)
 
-	dc := &DefaultChecker{ctx: context.Background(), client: *github.NewClient(nil), user: "silvanocostanzo"}
-	repos, err := checkRateLimit(dc)
+	dc := &DefaultChecker{ctx: context.Background(), client: *github.NewClient(nil), user: "silvanocostanzo", repo: "assmat"}
+	repo, err := getRepo(dc)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(*repo.Name)
 
+	_, err = checkRateLimit(dc)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Println(repos)
-
-	// _, err := checkRateLimit(ctx, client)
-
-	//
-	// req, res, err := createNewPullRequest(ctx, client)
-	//
-	// if err != nil {
-	// log.Fatal(err)
-	// }
-	//
-	// fmt.Println(req)
-	// fmt.Println(res)
 }
