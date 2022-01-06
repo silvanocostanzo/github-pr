@@ -30,7 +30,6 @@ func checkRateLimit(c Checker) ([]*github.Repository, error) {
 		return nil, err
 	}
 	return repos, nil
-
 }
 
 func createNewPullRequest(ctx context.Context, client *github.Client) (*github.PullRequest, *github.Response, error) {
